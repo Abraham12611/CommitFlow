@@ -61,11 +61,9 @@ We welcome contributions from the open-source community! To get started:
 
 Thanks to all our contributors!
 
-<!-- Contributors list generated automatically 
-<a href="https://github.com/yourusername/commitflow/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=yourusername/commitflow" />
+<a href="https://github.com/abraham12611/commitflow/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=abraham12611/commitflow" />
 </a>
--->
 
 ## License
 
