@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/github/license/abraham12611/commitflow)](LICENSE)
 [![Contributors](https://img.shields.io/github/contributors/abraham12611/commitflow)](#contributors)
 
-CommitFlow is an open-source CLI tool and code editor extension that helps developers generate industry-standard commit messages to keep their commit logs clear, structured, and professional.
+CommitFlow is an open-source CLI tool and code editor extension that helps developers generate industry-standard commit messages to keep their commit logs clear, structured, and professinal.
 
 ## Features
 
