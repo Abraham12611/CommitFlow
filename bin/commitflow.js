@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 // Import necessary modules
-const simpleGit = require('simple-git');
-const inquirer = require('inquirer');
-const { generateCommitMessage } = require('../lib/generateMessage');
+import simpleGit from 'simple-git';
+import inquirer from 'inquirer';
+import { generateCommitMessage } from '../lib/generateMessage.js';
 
 // Initialize simple-git instance
 const git = simpleGit();
