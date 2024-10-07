@@ -35,7 +35,7 @@ async function askCommitDetails() {
       type: 'input',
       name: 'description',
       message: 'Write a short description of the change:',
-      validate: (input) => input ? true : 'Description cannot be empty.',
+      validate: (input) => (input ? true : 'Description cannot be empty.'),
     },
     {
       type: 'input',
