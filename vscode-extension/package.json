@@ -1,0 +1,25 @@
+{
+    "name": "commitflow-vscode",
+    "displayName": "CommitFlow",
+    "description": "AI-powered commit message generator for Git",
+    "version": "1.0.0",
+    "engines": {
+      "vscode": "^1.60.0"
+    },
+    "activationEvents": [
+      "onCommand:commitflow.generateCommitMessage"
+    ],
+    "main": "./src/extension.js",
+    "contributes": {
+      "commands": [
+        {
+          "command": "commitflow.generateCommitMessage",
+          "title": "CommitFlow: Generate Commit Message"
+        }
+      ]
+    },
+    "dependencies": {
+      "openai": "^3.0.0"
+    }
+  }
+  
