@@ -1,66 +1,73 @@
 #!/usr/bin/env node
-import { execSync } from 'child_process';
-import { generateCommitMessage } from '../lib/generateMessage.js';
-import { aiCommitMessage } from '../src/aiCommit.js';
-import inquirer from 'inquirer';
-import simpleGit from 'simple-git';
+const { execSync } = require('child_process');
+const { generateCommitMessage } = require('../lib/generateMessage.js');
+const simpleGit = require('simple-git');
+const { aiCommitMessage } = require('../src/aiCommit.js');
+const { select, text, confirm } = require('@inquirer/prompts'); // Import specific prompt types
 
 // Initialize git
 const git = simpleGit();
 
 // CLI Flow
 async function runCommitFlow() {
-  // Check if the user is using AI or manual mode
-  const { mode } = await inquirer.prompt([
-    {
-      type: 'list',
+  try {
+    // Check if the user is using AI or manual mode
+    const { mode } = await select({ 
       name: 'mode',
       message: 'Choose commit mode:',
-      choices: ['Manual', 'AI'],
-    },
-  ]);
+      choices: [
+        { title: 'Manual', value: 'manual' }, 
+        { title: 'AI', value: 'ai' }
+      ],
+    });
 
-  if (mode === 'Manual') {
-    // Manual Mode
-    const commitDetails = await inquirer.prompt([
-      { name: 'type', message: 'Commit type:' },
-      { name: 'scope', message: 'Commit scope:' },
-      { name: 'description', message: 'Commit description:' },
-      { name: 'issue', message: 'Issue/ticket number (optional):' },
-    ]);
-    const commitMessage = generateCommitMessage(commitDetails);
-    console.log('Generated Commit Message:', commitMessage);
+    if (mode === 'manual') {
+      // Manual Mode
+      const commitDetails = await Promise.all([
+        await text({ name: 'type', message: 'Commit type:' }), // Use await here
+        await text({ name: 'scope', message: 'Commit scope:' }), // Use await here
+        await text({ name: 'description', message: 'Commit description:' }), // Use await here
+        await text({ name: 'issue', message: 'Issue/ticket number (optional):' }), // Use await here
+      ]);
+      const commitMessage = generateCommitMessage(commitDetails);
+      console.log('Generated Commit Message:', commitMessage);
 
-    // Ask to run the commit
-    const { confirmCommit } = await inquirer.prompt([
-      { type: 'confirm', name: 'confirmCommit', message: 'Commit with this message?' },
-    ]);
+      // Ask to run the commit
+      const { confirmCommit } = await confirm({
+        name: 'confirmCommit',
+        message: 'Commit with this message?'
+      });
 
-    if (confirmCommit) {
-      git.commit(commitMessage);
-      console.log('Committed successfully!');
+      if (confirmCommit) {
+        git.commit(commitMessage);
+        console.log('Committed successfully!');
+      }
+    } else {
+      // AI Mode
+      const { apiKey } = await text({
+        name: 'apiKey',
+        message: 'Enter your OpenAI API key:'
+      });
+
+      // Get changes from git
+      const diff = execSync('git diff --staged', { encoding: 'utf8' });
+      const commitMessage = await aiCommitMessage(diff, apiKey);
+
+      console.log('AI-Generated Commit Message:', commitMessage);
+
+      // Ask to run the commit
+      const { confirmCommit } = await confirm({
+        name: 'confirmCommit',
+        message: 'Commit with this message?'
+      });
+
+      if (confirmCommit) {
+        git.commit(commitMessage);
+        console.log('Committed successfully!');
+      }
     }
-  } else {
-    // AI Mode
-    const { apiKey } = await inquirer.prompt([
-      { name: 'apiKey', message: 'Enter your OpenAI API key:' },
-    ]);
-
-    // Get changes from git
-    const diff = execSync('git diff --staged', { encoding: 'utf8' });
-    const commitMessage = await aiCommitMessage(diff, apiKey);
-
-    console.log('AI-Generated Commit Message:', commitMessage);
-
-    // Ask to run the commit
-    const { confirmCommit } = await inquirer.prompt([
-      { type: 'confirm', name: 'confirmCommit', message: 'Commit with this message?' },
-    ]);
-
-    if (confirmCommit) {
-      git.commit(commitMessage);
-      console.log('Committed successfully!');
-    }
+  } catch (error) {
+    console.error('Error during commit flow:', error);
   }
 }
 

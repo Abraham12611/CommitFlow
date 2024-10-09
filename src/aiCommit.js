@@ -1,6 +1,6 @@
-import { Configuration, OpenAIApi } from 'openai';
+const { Configuration, OpenAIApi } = require('openai');
 
-export async function aiCommitMessage(diff, apiKey) {
+async function aiCommitMessage(diff, apiKey) {
   const configuration = new Configuration({
     apiKey,
   });
@@ -19,3 +19,5 @@ export async function aiCommitMessage(diff, apiKey) {
     return 'AI commit message generation failed';
   }
 }
+
+module.exports = { aiCommitMessage };
